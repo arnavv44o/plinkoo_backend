@@ -1,0 +1,3 @@
+[submodule "plinkoo_backend"]
+	path = plinkoo_backend
+	url = https://github.com/arnavv44o/plinkoo_backend.git
