@@ -1,9 +1,14 @@
 import express from "express";
 import cors from "cors";
-import { outcomes } from "./outcomes";
+import { outcomes } from "./outcomes";  // Make sure the outcomes module is correctly implemented and imported
 
 const app = express();
-app.use(cors());
+
+// Enable CORS to allow requests from different origins
+app.use(cors({ origin: '*' }));
+
+// Middleware to parse incoming JSON requests
+app.use(express.json());
 
 const TOTAL_DROPS = 16;
 
@@ -27,9 +32,14 @@ const MULTIPLIERS: { [key: number]: number } = {
   16: 16,
 };
 
+// Route to handle the game logic
 app.post("/game", (req, res) => {
+  console.log("Received request body:", req.body);  // Log the request body for debugging
+
   let outcome = 0;
   const pattern = [];
+
+  // Simulate the ball drop logic
   for (let i = 0; i < TOTAL_DROPS; i++) {
     if (Math.random() > 0.5) {
       pattern.push("R");
@@ -42,6 +52,7 @@ app.post("/game", (req, res) => {
   const multiplier = MULTIPLIERS[outcome];
   const possibleOutcomes = outcomes[outcome];
 
+  // Send the calculated point and multiplier back to the client
   res.send({
     point: possibleOutcomes[Math.floor(Math.random() * possibleOutcomes.length || 0)],
     multiplier,
@@ -49,6 +60,9 @@ app.post("/game", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+// Use the PORT from environment variables for deployment, or default to port 3000 for local development
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
